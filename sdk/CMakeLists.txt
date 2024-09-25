@@ -30,12 +30,15 @@ endif()
 # Clean a bit before
 unset(FFX_GDK CACHE)
 
-message(STATUS "FFX_API_BACKEND is ${FFX_API_BACKEND}")
+message(STATUS "FFX_API_BACKEND_VK_X64 is ${FFX_API_BACKEND_VK_X64}")
+message(STATUS "FFX_API_BACKEND_DX12_X64 is ${FFX_API_BACKEND_DX12_X64}")
+message(STATUS "FFX_API_BACKEND_GDK_DESKTOP_X64 is ${FFX_API_BACKEND_GDK_DESKTOP_X64}")
+message(STATUS "FFX_API_BACKEND_GDK_SCARLETT_X64 is ${FFX_API_BACKEND_GDK_SCARLETT_X64}")
 
-if(FFX_API_BACKEND STREQUAL VK_X64 OR 
-   FFX_API_BACKEND STREQUAL DX12_X64 OR 
-   FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64 OR 
-   FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+if(FFX_API_BACKEND_VK_X64 OR
+   FFX_API_BACKEND_DX12_X64 OR
+   FFX_API_BACKEND_GDK_DESKTOP_X64 OR
+   FFX_API_BACKEND_GDK_SCARLETT_X64)
 	set(FFX_CUSTOM_API OFF)
 else()
 	set(FFX_CUSTOM_API ON)
@@ -45,7 +48,8 @@ endif()
 if (NOT FFX_CUSTOM_API)
 
 	# Are we buiding the GDK?
-	if (FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64 OR FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+	if (FFX_API_BACKEND_GDK_DESKTOP_X64 OR
+        FFX_API_BACKEND_GDK_SCARLETT_X64)
 		set(FFX_GDK ON)
 	endif()
 
@@ -54,18 +58,22 @@ if (NOT FFX_CUSTOM_API)
 	
 	# If we are NOT building the GDK, queue up DX12/VK solution for building
 	if (NOT FFX_GDK)
-		if (FFX_API_BACKEND STREQUAL DX12_X64)
+		if (FFX_API_BACKEND_DX12_X64)
 			message(STATUS "Building FidelityFX SDK with DX12 backend")
-		elseif(FFX_API_BACKEND STREQUAL VK_X64)
+		endif()
+		if (FFX_API_BACKEND_VK_X64)
 			message(STATUS "Building FidelityFX SDK with VK backend")
 		endif()
 	else()
 		# List the API we are building for
-		if(FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64)
+		if(FFX_API_BACKEND_GDK_DESKTOP_X64)
 			message(STATUS "Building FidelityFX SDK with GDK Gaming.Desktop.x64 backend")
-		elseif(FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+		endif()
+		if(FFX_API_BACKEND_GDK_SCARLETT_X64)
 			message(STATUS "Building FidelityFX SDK with GDK Gaming.Scarlett.x64 backend")
-		else()
+		endif()
+		if(NOT FFX_API_BACKEND_GDK_DESKTOP_X64 AND
+           NOT FFX_API_BACKEND_GDK_SCARLETT_X64)
 			message(FATAL_ERROR "Requesting unsupported GDK build of FidelityFX SDK!")
 		endif()
 	endif()
@@ -193,19 +201,26 @@ set(FFX_PUBLIC_SHADER_SOURCES
     "${FFX_GPU_PATH}/ffx_core_hlsl.h"
     "${FFX_GPU_PATH}/ffx_core_portability.h")
 
-if (FFX_API_BACKEND STREQUAL DX12_X64)
+if (FFX_API_BACKEND_DX12_X64)
 	message(STATUS "Creating project FidelityFX-SDK_DX12_x64")
 	project (FidelityFX-SDK_DX12_x64)
-elseif (FFX_API_BACKEND STREQUAL VK_X64)
+endif()
+if (FFX_API_BACKEND_VK_X64)
 	message(STATUS "Creating project FidelityFX-SDK_VK_x64")
 	project (FidelityFX-SDK_VK_x64)
-elseif(FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64)
+endif()
+if(FFX_API_BACKEND_GDK_DESKTOP_X64)
 	message(STATUS "Creating project FidelityFX-SDK_GDK_Desktop_x64")
 	project (FidelityFX-SDK_GDK_Desktop_x64)
-elseif(FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+endif()
+if(FFX_API_BACKEND_GDK_SCARLETT_X64)
 	message(STATUS "Creating project FidelityFX-SDK_GDK_Scarlett_x64")
 	project (FidelityFX-SDK_GDK_Scarlett_x64)
-else()
+endif()
+if(NOT FFX_API_BACKEND_DX12_X64 AND
+   NOT FFX_API_BACKEND_VK_X64 AND
+   NOT FFX_API_BACKEND_GDK_DESKTOP_X64 AND
+   NOT FFX_API_BACKEND_GDK_SCARLETT_X64)
 	# This is likely a custom include
 	project (FidelityFX-SDK)
 endif()
@@ -234,16 +249,17 @@ add_subdirectory(${FFX_COMPONENTS_PATH}/classifier)
 add_subdirectory(${FFX_COMPONENTS_PATH}/breadcrumbs)
 
 # Add appropriate graphics backend if requested
-if(FFX_API_BACKEND STREQUAL DX12_X64)
+if(FFX_API_BACKEND_DX12_X64)
 	add_subdirectory(${FFX_LIB_PATH}/pix)
     add_subdirectory(${FFX_SRC_BACKENDS_PATH}/dx12)
 endif()
 
-if (FFX_API_BACKEND STREQUAL VK_X64)
+if (FFX_API_BACKEND_VK_X64)
 	add_subdirectory(${FFX_SRC_BACKENDS_PATH}/vk)
 endif()
 
-if(FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64 OR FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+if(FFX_API_BACKEND_GDK_DESKTOP_X64 OR
+   FFX_API_BACKEND_GDK_SCARLETT_X64)
 	# TODO when we have the right lib to include
 	#add_subdirectory(${FFX_LIB_PATH}/pix)
 	add_subdirectory(${FFX_SRC_BACKENDS_PATH}/gdk)

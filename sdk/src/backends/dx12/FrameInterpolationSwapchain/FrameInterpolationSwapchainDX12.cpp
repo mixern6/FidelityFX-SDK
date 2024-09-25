@@ -213,7 +213,7 @@ FfxErrorCode ffxCreateFrameinterpolationSwapchainForHwndDX12(HWND               
     return err;
 }
 
-FfxErrorCode ffxWaitForPresents(FfxSwapchain gameSwapChain)
+FfxErrorCode ffxWaitForPresentsDX12(FfxSwapchain gameSwapChain)
 {
     IDXGISwapChain4* swapChain = ffxGetDX12SwapchainPtr(gameSwapChain);
 
@@ -355,7 +355,7 @@ DWORD WINAPI presenterThread(LPVOID param)
 
                             // pacing without composition
                             waitForFenceValue(presenter->compositionFence, frameInfo.presentIndex);
-                            waitForPerformanceCount(previousPresentQpc + frameInfo.presentQpcDelta);
+                            waitForPerformanceCountDX12(previousPresentQpc + frameInfo.presentQpcDelta);
                             QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&previousPresentQpc));
                             presentToSwapChain(presenter, &entry, (PacingData::FrameType)frameType);
                         }
@@ -373,7 +373,7 @@ DWORD WINAPI presenterThread(LPVOID param)
     return 0;
 }
 
-DWORD WINAPI interpolationThread(LPVOID param)
+DWORD WINAPI interpolationThreadDX12(LPVOID param)
 {
     FrameinterpolationPresentInfo* presenter = static_cast<FrameinterpolationPresentInfo*>(param);
 
@@ -742,7 +742,7 @@ bool FrameInterpolationSwapChainDX12::spawnPresenterThread()
     if (interpolationThreadHandle == NULL)
     {
         presentInfo.shutdown      = false;
-        interpolationThreadHandle = CreateThread(nullptr, 0, interpolationThread, reinterpret_cast<void*>(&presentInfo), 0, nullptr);
+        interpolationThreadHandle = CreateThread(nullptr, 0, interpolationThreadDX12, reinterpret_cast<void*>(&presentInfo), 0, nullptr);
         
         FFX_ASSERT(interpolationThreadHandle != NULL);
 

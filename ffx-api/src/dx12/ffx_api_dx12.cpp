@@ -22,9 +22,9 @@
 
 #include <FidelityFX/host/ffx_types.h>
 #include <FidelityFX/host/ffx_error.h>
-#include <ffx_api/ffx_api.h>
-#include "ffx_provider.h"
-#include "backends.h"
+#include <ffx_api/dx12/ffx_api_dx12.h>
+#include "../ffx_provider.h"
+#include "../backends.h"
 
 static uint64_t GetVersionOverride(const ffxApiHeader* header)
 {
@@ -38,7 +38,7 @@ static uint64_t GetVersionOverride(const ffxApiHeader* header)
     return 0;
 }
 
-FFX_API_ENTRY ffxReturnCode_t ffxCreateContext(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb)
+FFX_API_ENTRY ffxReturnCode_t ffxCreateContextDX12(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb)
 {
     VERIFY(desc != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
     VERIFY(context != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
@@ -52,7 +52,7 @@ FFX_API_ENTRY ffxReturnCode_t ffxCreateContext(ffxContext* context, ffxCreateCon
     return provider->CreateContext(context, desc, alloc);
 }
 
-FFX_API_ENTRY ffxReturnCode_t ffxDestroyContext(ffxContext* context, const ffxAllocationCallbacks* memCb)
+FFX_API_ENTRY ffxReturnCode_t ffxDestroyContextDX12(ffxContext* context, const ffxAllocationCallbacks* memCb)
 {
     VERIFY(context != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
 
@@ -60,7 +60,7 @@ FFX_API_ENTRY ffxReturnCode_t ffxDestroyContext(ffxContext* context, const ffxAl
     return GetAssociatedProvider(context)->DestroyContext(context, alloc);
 }
 
-FFX_API_ENTRY ffxReturnCode_t ffxConfigure(ffxContext* context, const ffxConfigureDescHeader* desc)
+FFX_API_ENTRY ffxReturnCode_t ffxConfigureDX12(ffxContext* context, const ffxConfigureDescHeader* desc)
 {
     VERIFY(desc != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
     VERIFY(context != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
@@ -68,7 +68,7 @@ FFX_API_ENTRY ffxReturnCode_t ffxConfigure(ffxContext* context, const ffxConfigu
     return GetAssociatedProvider(context)->Configure(context, desc);
 }
 
-FFX_API_ENTRY ffxReturnCode_t ffxQuery(ffxContext* context, ffxQueryDescHeader* header)
+FFX_API_ENTRY ffxReturnCode_t ffxQueryDX12(ffxContext* context, ffxQueryDescHeader* header)
 {
     VERIFY(header != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
 
@@ -101,7 +101,7 @@ FFX_API_ENTRY ffxReturnCode_t ffxQuery(ffxContext* context, ffxQueryDescHeader* 
     return GetAssociatedProvider(context)->Query(context, header);
 }
 
-FFX_API_ENTRY ffxReturnCode_t ffxDispatch(ffxContext* context, const ffxDispatchDescHeader* desc)
+FFX_API_ENTRY ffxReturnCode_t ffxDispatchDX12(ffxContext* context, const ffxDispatchDescHeader* desc)
 {
     VERIFY(desc != nullptr, FFX_API_RETURN_ERROR_PARAMETER);
     VERIFY(context != nullptr, FFX_API_RETURN_ERROR_PARAMETER);

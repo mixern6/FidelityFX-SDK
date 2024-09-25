@@ -645,7 +645,7 @@ FfxErrorCode ffxReplaceSwapchainForFrameinterpolationVK(FfxCommandQueue         
     return status;
 }
 
-FfxErrorCode ffxWaitForPresents(FfxSwapchain gameSwapChain)
+FfxErrorCode ffxWaitForPresentsVK(FfxSwapchain gameSwapChain)
 {
     FrameInterpolationSwapChainVK* frameinterpolationSwapchain = reinterpret_cast<FrameInterpolationSwapChainVK*>(gameSwapChain);
 
@@ -910,7 +910,7 @@ DWORD WINAPI copyAndPresent_presenterThread(LPVOID pParam)
 
                             res = presentCommandList->execute(toWait, toSignal);
 
-                            waitForPerformanceCount(previousPresentQpc + frameInfo.presentQpcDelta);
+                            waitForPerformanceCountVK(previousPresentQpc + frameInfo.presentQpcDelta);
                             QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&previousPresentQpc));
 
                             res = presentToSwapChain(presenter, imageIndex, imageIndex);
@@ -1002,7 +1002,7 @@ DWORD WINAPI composeAndPresent_presenterThread(LPVOID pParam)
                             res = compositeSwapChainFrame(presenter, &entry, (PacingData::FrameType)frameType, realSwapchainImageIndex, presenter->presentQueue, toWait, toSignal, uiSurfaceTransfered);
                             FFX_ASSERT_MESSAGE_FORMAT(res == VK_SUCCESS, "compositeSwapChainFrame failed with error %d", res);
 
-                            waitForPerformanceCount(previousPresentQpc + frameInfo.presentQpcDelta);
+                            waitForPerformanceCountVK(previousPresentQpc + frameInfo.presentQpcDelta);
                             QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&previousPresentQpc));
                             
                             res = presentToSwapChain(presenter, realSwapchainImageIndex);
@@ -1030,7 +1030,7 @@ DWORD WINAPI composeAndPresent_presenterThread(LPVOID pParam)
     return 0;
 }
 
-DWORD WINAPI interpolationThread(LPVOID param)
+DWORD WINAPI interpolationThreadVK(LPVOID param)
 {
     FrameinterpolationPresentInfo* presenter = static_cast<FrameinterpolationPresentInfo*>(param);
 
@@ -2397,7 +2397,7 @@ bool FrameInterpolationSwapChainVK::spawnPresenterThread()
     if (interpolationThreadHandle == NULL)
     {
         presentInfo.shutdown = false;
-        interpolationThreadHandle = CreateThread(nullptr, 0, interpolationThread, reinterpret_cast<void*>(&presentInfo), 0, nullptr);
+        interpolationThreadHandle = CreateThread(nullptr, 0, interpolationThreadVK, reinterpret_cast<void*>(&presentInfo), 0, nullptr);
         FFX_ASSERT(interpolationThreadHandle != NULL);
 
         if (interpolationThreadHandle != 0)

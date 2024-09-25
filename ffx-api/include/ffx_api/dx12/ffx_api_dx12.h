@@ -21,11 +21,55 @@
 // THE SOFTWARE.
 
 #pragma once
-#include "../ffx_api.h"
 #include "../ffx_api_types.h"
 #include <d3d12.h>
 #include <dxgi.h>
 #include <dxgi1_5.h>
+
+#if defined(__cplusplus)
+extern "C" {
+#endif  // #if defined(__cplusplus)
+
+#include "../ffx_api.h"
+
+#define FFX_API_ENTRY __declspec(dllexport)
+#include <stdint.h>
+
+// Creates a FFX object context.
+// Depending on the desc structures provided to this function, the context will be created with the desired version and attributes.
+// Non-zero return indicates error code.
+// Pointers passed in desc must remain live until ffxDestroyContext is called on the context.
+// MemCb may be null; the system allocator (malloc/free) will be used in this case.
+FFX_API_ENTRY ffxReturnCode_t ffxCreateContextDX12(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb);
+typedef ffxReturnCode_t (*PfnFfxCreateContextDX12)(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb);
+
+// Destroys an FFX object context.
+// Non-zero return indicates error code.
+// MemCb must be compatible with the callbacks passed into ffxCreateContext.
+FFX_API_ENTRY ffxReturnCode_t ffxDestroyContextDX12(ffxContext* context, const ffxAllocationCallbacks* memCb);
+typedef ffxReturnCode_t (*PfnFfxDestroyContextDX12)(ffxContext* context, const ffxAllocationCallbacks* memCb);
+
+// Configures the provided FFX object context.
+// If context is null, configure operates on any global state.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxConfigureDX12(ffxContext* context, const ffxConfigureDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxConfigureDX12)(ffxContext* context, const ffxConfigureDescHeader* desc);
+
+// Queries the provided FFX object context.
+// If context is null, query operates on any global state.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxQueryDX12(ffxContext* context, ffxQueryDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxQueryDX12)(ffxContext* context, ffxQueryDescHeader* desc);
+
+// Dispatches work on the given FFX object context defined by the dispatch descriptor.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxDispatchDX12(ffxContext* context, const ffxDispatchDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxDispatchDX12)(ffxContext* context, const ffxDispatchDescHeader* desc);
+
+#if defined(__cplusplus)
+}
+#endif  // #if defined(__cplusplus)
+
 
 #define FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_DX12 0x0000002u
 struct ffxCreateBackendDX12Desc

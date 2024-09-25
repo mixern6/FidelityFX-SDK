@@ -25,10 +25,65 @@
 #include "../ffx_api.hpp"
 #include "ffx_api_dx12.h"
 
+#include <cstdint>
+#include <type_traits>
+
 // Helper types for header initialization. Api definition is in .h file.
 
 namespace ffx
 {
+
+namespace dx12
+{
+
+template <class... Desc>
+inline ReturnCode CreateContext(Context& context, ffxAllocationCallbacks* memCb, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxCreateContextDX12(&context, header, memCb));
+}
+
+inline ReturnCode DestroyContext(Context& context, ffxAllocationCallbacks* memCb = nullptr)
+{
+    return detail::ConvertReturnCode(ffxDestroyContextDX12(&context, memCb));
+}
+
+template <class... Desc>
+inline ReturnCode Configure(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxConfigureDX12(&context, header));
+}
+
+template <class... Desc>
+inline ReturnCode Configure(Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxConfigureDX12(nullptr, header));
+}
+
+template <class... Desc>
+inline ReturnCode Query(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxQueryDX12(&context, header));
+}
+
+template <class... Desc>
+inline ReturnCode Query(Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxQueryDX12(nullptr, header));
+}
+
+template <class... Desc>
+inline ReturnCode Dispatch(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxDispatchDX12(&context, header));
+}
+
+}  // namespace dx12
 
 template<>
 struct struct_type<ffxCreateBackendDX12Desc> : std::integral_constant<uint64_t, FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_DX12> {};

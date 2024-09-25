@@ -22,22 +22,27 @@
 
 #pragma once
 
-#include "ffx_api.h"
+#include "ffx_api_vk.h"
 #include <windows.h>
 
+namespace vk
+{
+
 typedef struct ffxFunctions {
-    PfnFfxCreateContext CreateContext;
-    PfnFfxDestroyContext DestroyContext;
-    PfnFfxConfigure Configure;
-    PfnFfxQuery Query;
-    PfnFfxDispatch Dispatch;
+    PfnFfxCreateContextVK  CreateContextVK;
+    PfnFfxDestroyContextVK DestroyContextVK;
+    PfnFfxConfigureVK      ConfigureVK;
+    PfnFfxQueryVK          QueryVK;
+    PfnFfxDispatchVK       DispatchVK;
 } ffxFunctions;
 
 static inline void ffxLoadFunctions(ffxFunctions* pOutFunctions, HMODULE module)
 {
-    pOutFunctions->CreateContext  = (PfnFfxCreateContext )GetProcAddress(module, "ffxCreateContext");
-    pOutFunctions->DestroyContext = (PfnFfxDestroyContext)GetProcAddress(module, "ffxDestroyContext");
-    pOutFunctions->Configure      = (PfnFfxConfigure     )GetProcAddress(module, "ffxConfigure");
-    pOutFunctions->Query          = (PfnFfxQuery         )GetProcAddress(module, "ffxQuery");
-    pOutFunctions->Dispatch       = (PfnFfxDispatch      )GetProcAddress(module, "ffxDispatch");
+    pOutFunctions->CreateContextVK  = (PfnFfxCreateContextVK)GetProcAddress(module, "ffxCreateContextVK");
+    pOutFunctions->DestroyContextVK = (PfnFfxDestroyContextVK)GetProcAddress(module, "ffxDestroyContextVK");
+    pOutFunctions->ConfigureVK      = (PfnFfxConfigureVK)GetProcAddress(module, "ffxConfigureVK");
+    pOutFunctions->QueryVK          = (PfnFfxQueryVK)GetProcAddress(module, "ffxQueryVK");
+    pOutFunctions->DispatchVK       = (PfnFfxDispatchVK)GetProcAddress(module, "ffxDispatchVK");
 }
+
+}  // namespace vk

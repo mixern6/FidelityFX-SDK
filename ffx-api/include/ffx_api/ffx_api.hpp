@@ -30,6 +30,8 @@
 namespace ffx
 {
 
+typedef void* FfxSwapchain;
+using Swapchain = FfxSwapchain;
 using Context = ffxContext;
 
 enum class ReturnCode : uint32_t
@@ -78,64 +80,23 @@ Header* LinkHeaders(Header& hdr)
     return &hdr;
 }
 
-template<class... Desc>
-inline ReturnCode CreateContext(Context& context, ffxAllocationCallbacks* memCb, Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxCreateContext(&context, header, memCb));
-}
-
-inline ReturnCode DestroyContext(Context& context, ffxAllocationCallbacks* memCb = nullptr)
-{
-    return detail::ConvertReturnCode(ffxDestroyContext(&context, memCb));
-}
-
-template<class... Desc>
-inline ReturnCode Configure(Context &context, Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxConfigure(&context, header));
-}
-
-template<class... Desc>
-inline ReturnCode Configure(Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxConfigure(nullptr, header));
-}
-
-template<class... Desc>
-inline ReturnCode Query(Context &context, Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxQuery(&context, header));
-}
-
-template<class... Desc>
-inline ReturnCode Query(Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxQuery(nullptr, header));
-}
-
-template<class... Desc>
-inline ReturnCode Dispatch(Context &context, Desc&... desc)
-{
-    auto header = LinkHeaders(desc.header...);
-    return detail::ConvertReturnCode(ffxDispatch(&context, header));
-}
-
-template<class T>
+template <class T>
 struct struct_type;
 
-template<>
-struct struct_type<ffxConfigureDescGlobalDebug1> : std::integral_constant<uint64_t, FFX_API_CONFIGURE_DESC_TYPE_GLOBALDEBUG1> {};
+template <>
+struct struct_type<ffxConfigureDescGlobalDebug1> : std::integral_constant<uint64_t, FFX_API_CONFIGURE_DESC_TYPE_GLOBALDEBUG1>
+{
+};
 
-template<>
-struct struct_type<ffxOverrideVersion> : std::integral_constant<uint64_t, FFX_API_DESC_TYPE_OVERRIDE_VERSION> {};
+template <>
+struct struct_type<ffxOverrideVersion> : std::integral_constant<uint64_t, FFX_API_DESC_TYPE_OVERRIDE_VERSION>
+{
+};
 
-template<>
-struct struct_type<ffxQueryDescGetVersions> : std::integral_constant<uint64_t, FFX_API_QUERY_DESC_TYPE_GET_VERSIONS> {};
+template <>
+struct struct_type<ffxQueryDescGetVersions> : std::integral_constant<uint64_t, FFX_API_QUERY_DESC_TYPE_GET_VERSIONS>
+{
+};
 
 template <class Inner, uint64_t type = struct_type<Inner>::value>
 struct InitHelper : public Inner
@@ -143,33 +104,36 @@ struct InitHelper : public Inner
     InitHelper()
     {
         this->header.pNext = nullptr;
-        this->header.type = type;
+        this->header.type  = type;
     }
 };
 
 struct ConfigureDescGlobalDebug1 : public InitHelper<ffxConfigureDescGlobalDebug1>
-{};
+{
+};
 
 struct CreateContextDescOverrideVersion : public InitHelper<ffxOverrideVersion>
-{};
+{
+};
 
 struct QueryDescGetVersions : public InitHelper<ffxQueryDescGetVersions>
-{};
+{
+};
 
-template<class T>
-const T* DynamicCast(const ffxApiHeader *hdr)
+template <class T>
+const T* DynamicCast(const ffxApiHeader* hdr)
 {
     if (hdr->type == struct_type<T>::value)
         return reinterpret_cast<const T*>(hdr);
     return nullptr;
 }
 
-template<class T>
-T* DynamicCast(ffxApiHeader *hdr)
+template <class T>
+T* DynamicCast(ffxApiHeader* hdr)
 {
     if (hdr->type == struct_type<T>::value)
         return reinterpret_cast<T*>(hdr);
     return nullptr;
 }
 
-}
+}  // namespace ffx
