@@ -39,7 +39,7 @@ IDXGIFactory* getDXGIFactoryFromSwapChain(IDXGISwapChain* swapChain)
     return factory;
 }
 
-void waitForPerformanceCount(const int64_t targetCount)
+void waitForPerformanceCountDX12(const int64_t targetCount)
 {
     int64_t currentCount = 0;
     do

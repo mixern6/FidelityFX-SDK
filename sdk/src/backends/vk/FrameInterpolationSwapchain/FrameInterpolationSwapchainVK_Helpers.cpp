@@ -26,7 +26,7 @@
 #include <dwmapi.h>
 #endif  // #ifdef _WIN32
 
-void waitForPerformanceCount(const int64_t targetCount)
+void waitForPerformanceCountVK(const int64_t targetCount)
 {
     int64_t currentCount = 0;
     do

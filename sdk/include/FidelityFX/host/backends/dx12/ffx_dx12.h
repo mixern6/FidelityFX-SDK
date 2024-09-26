@@ -258,7 +258,7 @@ FFX_API FfxErrorCode ffxCreateFrameinterpolationSwapchainForHwndDX12(HWND hWnd,
 /// FFX_ERROR_INVALID_ARGUMENT          Could not query the interface for the frame interpolation swap chain.
 ///
 /// @ingroup DX12FrameInterpolation
-FFX_API FfxErrorCode ffxWaitForPresents(FfxSwapchain gameSwapChain);
+FFX_API FfxErrorCode ffxWaitForPresentsDX12(FfxSwapchain gameSwapChain);
 
 /// Registers a <c><i>FfxResource</i></c> to use for UI with the provided <c><i>FfxSwapchain</i></c>.
 ///

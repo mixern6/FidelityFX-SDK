@@ -174,7 +174,7 @@ ffxReturnCode_t ffxProvider_FrameGenerationSwapChain_DX12::Dispatch(ffxContext* 
     InternalFgScContext* internal_context = reinterpret_cast<InternalFgScContext*>(*context);
     if (auto desc = ffx::DynamicCast<ffxDispatchDescFrameGenerationSwapChainWaitForPresentsDX12>(header))
     {
-        ffxWaitForPresents(internal_context->fiSwapChain);
+        ffxWaitForPresentsDX12(internal_context->fiSwapChain);
         return FFX_API_RETURN_OK;
     }
     else

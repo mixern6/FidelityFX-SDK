@@ -25,10 +25,65 @@
 #include "../ffx_api.hpp"
 #include "ffx_api_vk.h"
 
+#include <cstdint>
+#include <type_traits>
+
 // Helper types for header initialization. Api definition is in .h file.
 
 namespace ffx
 {
+
+namespace vk
+{
+
+template <class... Desc>
+inline ReturnCode CreateContext(Context& context, ffxAllocationCallbacks* memCb, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxCreateContextVK(&context, header, memCb));
+}
+
+inline ReturnCode DestroyContext(Context& context, ffxAllocationCallbacks* memCb = nullptr)
+{
+    return detail::ConvertReturnCode(ffxDestroyContextVK(&context, memCb));
+}
+
+template <class... Desc>
+inline ReturnCode Configure(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxConfigureVK(&context, header));
+}
+
+template <class... Desc>
+inline ReturnCode Configure(Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxConfigureVK(nullptr, header));
+}
+
+template <class... Desc>
+inline ReturnCode Query(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxQueryVK(&context, header));
+}
+
+template <class... Desc>
+inline ReturnCode Query(Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxQueryVK(nullptr, header));
+}
+
+template <class... Desc>
+inline ReturnCode Dispatch(Context& context, Desc&... desc)
+{
+    auto header = LinkHeaders(desc.header...);
+    return detail::ConvertReturnCode(ffxDispatchVK(&context, header));
+}
+
+}  // namespace vk
 
 template<>
 struct struct_type<ffxCreateBackendVKDesc> : std::integral_constant<uint64_t, FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK> {};

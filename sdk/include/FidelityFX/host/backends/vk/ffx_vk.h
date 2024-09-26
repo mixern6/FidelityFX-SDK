@@ -249,7 +249,7 @@ FFX_API FfxErrorCode ffxReplaceSwapchainForFrameinterpolationVK(FfxCommandQueue 
 /// FFX_ERROR_INVALID_ARGUMENT          Could not query the interface for the frame interpolation swap chain.
 ///
 /// @ingroup VKFrameInterpolation
-FFX_API FfxErrorCode ffxWaitForPresents(FfxSwapchain gameSwapChain);
+FFX_API FfxErrorCode ffxWaitForPresentsVK(FfxSwapchain gameSwapChain);
 
 /// Registers a <c><i>FfxResource</i></c> to use for UI with the provided <c><i>FfxSwapchain</i></c>.
 ///

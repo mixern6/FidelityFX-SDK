@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <FidelityFX/host/ffx_types.h>
-#include <FidelityFX/host/ffx_util.h>
+#include "FidelityFX/host/ffx_types.h"
+#include "FidelityFX/host/ffx_util.h"
 
 #ifdef __cplusplus
 extern "C" {

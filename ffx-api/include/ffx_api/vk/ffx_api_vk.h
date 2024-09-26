@@ -21,9 +21,53 @@
 // THE SOFTWARE.
 
 #pragma once
-#include "../ffx_api.h"
 #include "../ffx_api_types.h"
 #include <vulkan/vulkan.h>
+
+#if defined(__cplusplus)
+extern "C" {
+#endif  // #if defined(__cplusplus)
+
+#include "../ffx_api.h"
+
+#define FFX_API_ENTRY __declspec(dllexport)
+#include <stdint.h>
+
+// Creates a FFX object context.
+// Depending on the desc structures provided to this function, the context will be created with the desired version and attributes.
+// Non-zero return indicates error code.
+// Pointers passed in desc must remain live until ffxDestroyContext is called on the context.
+// MemCb may be null; the system allocator (malloc/free) will be used in this case.
+FFX_API_ENTRY ffxReturnCode_t ffxCreateContextVK(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb);
+typedef ffxReturnCode_t (*PfnFfxCreateContextVK)(ffxContext* context, ffxCreateContextDescHeader* desc, const ffxAllocationCallbacks* memCb);
+
+// Destroys an FFX object context.
+// Non-zero return indicates error code.
+// MemCb must be compatible with the callbacks passed into ffxCreateContext.
+FFX_API_ENTRY ffxReturnCode_t ffxDestroyContextVK(ffxContext* context, const ffxAllocationCallbacks* memCb);
+typedef ffxReturnCode_t (*PfnFfxDestroyContextVK)(ffxContext* context, const ffxAllocationCallbacks* memCb);
+
+// Configures the provided FFX object context.
+// If context is null, configure operates on any global state.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxConfigureVK(ffxContext* context, const ffxConfigureDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxConfigureVK)(ffxContext* context, const ffxConfigureDescHeader* desc);
+
+// Queries the provided FFX object context.
+// If context is null, query operates on any global state.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxQueryVK(ffxContext* context, ffxQueryDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxQueryVK)(ffxContext* context, ffxQueryDescHeader* desc);
+
+// Dispatches work on the given FFX object context defined by the dispatch descriptor.
+// Non-zero return indicates error code.
+FFX_API_ENTRY ffxReturnCode_t ffxDispatchVK(ffxContext* context, const ffxDispatchDescHeader* desc);
+typedef ffxReturnCode_t (*PfnFfxDispatchVK)(ffxContext* context, const ffxDispatchDescHeader* desc);
+
+#if defined(__cplusplus)
+}
+#endif  // #if defined(__cplusplus)
+
 
 /// FFX specific callback type when submitting a command buffer to a queue.
 typedef VkResult (*PFN_vkQueueSubmitFFXAPI)(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);

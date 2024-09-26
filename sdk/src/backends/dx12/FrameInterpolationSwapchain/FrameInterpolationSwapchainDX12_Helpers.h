@@ -33,7 +33,7 @@
 
 IDXGIFactory*           getDXGIFactoryFromSwapChain(IDXGISwapChain* swapChain);
 bool                    isExclusiveFullscreen(IDXGISwapChain* swapChain);
-void                    waitForPerformanceCount(const int64_t targetCount);
+void                    waitForPerformanceCountDX12(const int64_t targetCount);
 bool                    waitForFenceValue(ID3D12Fence* fence, UINT64 value, DWORD dwMilliseconds = INFINITE);
 bool                    isTearingSupported(IDXGIFactory* dxgiFactory);
 bool                    getMonitorLuminanceRange(IDXGISwapChain* swapChain, float* outMinLuminance, float* outMaxLuminance);

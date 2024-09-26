@@ -31,7 +31,7 @@
 #include <synchapi.h>
 
 
-void waitForPerformanceCount(const int64_t targetCount);
+void waitForPerformanceCountVK(const int64_t targetCount);
 
 
 struct SubmissionSemaphores

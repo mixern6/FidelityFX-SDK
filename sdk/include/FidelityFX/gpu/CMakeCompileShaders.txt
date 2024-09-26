@@ -66,9 +66,9 @@ function(compile_shaders_with_depfile
 		list(APPEND COMPILE_INCLUDE_ARGS "-I${INCLUDE_SPACE}${INC}")
 	endforeach(INC)
 
-	if (FFX_API_BACKEND STREQUAL GDK_DESKTOP_X64)
+	if (FFX_API_BACKEND_GDK_DESKTOP_X64)
 		set(FFX_GDK_OPTION -compiler=gdk.desktop.x64)
-	elseif (FFX_API_BACKEND STREQUAL GDK_SCARLETT_X64)
+	elseif (FFX_API_BACKEND_GDK_SCARLETT_X64)
 		set(FFX_GDK_OPTION -compiler=gdk.scarlett.x64)
 	else()
 		set(FFX_GDK_OPTION )
